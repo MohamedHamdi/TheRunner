@@ -1,0 +1,71 @@
+div#Game
+{
+   
+    width: 800px ;
+    height: 600px;
+    margin: 0px auto;
+    display: inline-block;
+    border: #600 5px solid;
+    overflow: hidden;
+    margin-top: 25px;
+    margin-left: 2px;
+    margin-right: 2px;
+    z-index: 0;
+}
+
+
+div#GameThings
+{
+   
+    width: 300px ;
+    height: 600px;
+    float: left;
+    margin: 0px auto;
+    margin-left: 120px;
+    display: block;
+    border: #600 5px solid;
+    overflow: hidden;
+    margin-top: 25px;
+    z-index: 0;
+}
+
+div#SplashScreen
+{
+   
+    width: 1200px ;
+    height: 600px;
+    float: left;
+    margin: 0px auto;
+    left: 0px;
+    position: absolute;
+    margin-left: 80px;
+    display: inline-block;
+    border: #600 5px solid;
+    overflow: hidden;
+    background: url(../Images/SplashScreen.png);
+    margin-top: 25px;
+    z-index: 1;
+    visibility : visible;
+}
+
+
+div#GameOver
+{
+   
+    width: 1200px ;
+    height: 600px;
+    float: left;
+    margin: 0px auto;
+    left: 0px;
+    position: absolute;
+    margin-left: 80px;
+    display: inline-block;
+    border: #600 5px solid;
+    overflow: hidden;
+    background: url(../Images/GameOver.png);
+    margin-top: 25px;
+    z-index: 1;
+    visibility : hidden;
+}
+
+

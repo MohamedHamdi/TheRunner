@@ -1,0 +1,1085 @@
+<!Doctype html>
+<html>
+    <head>
+        
+        
+    <link rel="stylesheet" type="text/css" href="Css/AnimatedbackGroundstyleSheet.css"></link>
+    <script type="text/javascript" src="Js/MainObject.js"></script>
+    <script type="text/javascript" src="Js/Ground.js"></script>
+    <script type="text/javascript" src="Js/Sky.js"></script>
+   <script type="text/javascript" src="Js/player.js"></script>
+    <script type="text/javascript" src="Js/testIntersection.js"></script>
+   
+    
+    
+        <script>
+            
+            
+            //canavs
+             var cnv , ctx , cnv1 , ctx1 ,cnv2,ctx2,cnv3,ctx3,cnv4,ctx4,cnv5,ctx5,cnv6,ctx6,cnv7,ctx7,cnv8,ctx8;
+            
+            //some variables
+            var img , Gro , clo , img1 , msky;
+            
+            
+           
+            
+            var gameTime;
+             var gamePausedtxt;
+            
+            
+            function StartGame()
+            {
+                pause = false;
+                muteSound = false;
+                document.getElementById("SplashScreen").style.visibility = "hidden";
+                 
+                 time = new Date();
+            
+            }
+            
+            function gameOver()
+            {
+                pause = true;
+                muteSound = true;
+                 document.getElementById("GameOver").style.visibility = "visible";
+            }
+          
+            
+            
+          var gameFinished = false;
+            var pause = true;
+            var muteSound = true;
+            
+            
+            //Pause  &  Play
+            function paused()
+            {
+                pause = !pause;
+            }
+            //On/Off sound
+            function muteSound()
+            {
+                muteSound = !muteSound;
+            }
+          
+            
+            //Sounds
+            var hopp = new Audio('Sounds/Hop.mp3');
+            var pop = new Audio('Sounds/Pop.wav');
+            var RainSound = new Audio('Sounds/Rain.wav');
+            var BackGroundSound = new Audio('Sounds/BackGround.wav');
+            var HitSound = new Audio('Sounds/Hit.wav');
+            
+            
+            
+          var liveImages = new Array();
+            var liveImagesSources = [
+                "Images/Character/frame-6.png",
+                "Images/Character/frame-7.png",
+                "Images/Character/frame-8.png",
+                "Images/Character/frame-9.png",
+                "Images/Character/frame-10.png",
+                "Images/Character/frame-11.png"
+                
+            ];
+        
+         
+            
+            var SceneImages = new Array();
+            var SceneImagesSrcs =[
+              "Images/ground.png",
+                "Images/SkyColor.png",
+                "Images/Cloud.png",
+                "Images/shadow.png",
+                "Images/Obs.png",
+                "Images/Gift.png",
+                "Images/OrangeGift.png",
+                "Images/Rain.png",
+                "Images/GreenGift.png",
+                "Images/arrowUp.png"
+              
+            ];
+            
+            var OrangeImages = new Array();
+            var OrangeImagesSources = [
+                "Images/Character/frame-1-Orange.png",
+                "Images/Character/frame-2-Orange.png",
+                "Images/Character/frame-3-Orange.png",
+                "Images/Character/frame-4-Orange.png",
+                "Images/Character/frame5-orange.png",
+                "Images/Character/frame-6-Orange.png"
+            ];
+            
+            var GreenImages = new Array();
+            var GreenImagesSources = [
+                 "Images/Character/frame-1-Green.png",
+                "Images/Character/frame-2-Green.png",
+                "Images/Character/frame-3-Green.png",
+                "Images/Character/frame-4-Green.png",
+                "Images/Character/frame5-Green.png",
+                "Images/Character/frame-6-Green.png"
+            ];
+            
+            
+            var clouds = [];
+            var shadows = [];
+            var obs = [];
+            var candy = [];
+            var rain = [];
+            var Oranges = [];
+            var Greens = [];
+            
+            
+            
+            var playerImage = new Array();
+            var playerImageSources = [
+               "Images/Character/frame-1.png",
+                "Images/character/frame-2.png",
+                "Images/character/frame-3.png",
+                "Images/Character/frame-4.png",
+                "Images/character/frame5.png",
+                "Images/character/frame-6.png"  
+            ];
+            
+          
+             var time;
+          
+            
+            function init()
+            {
+                cnv = document.getElementById("MyC");
+                cnv1 = document.getElementById("MyC1");
+                cnv2 = document.getElementById("MyC2");
+               cnv3 = document.getElementById("MyC3");
+                cnv4 = document.getElementById("MyC4");
+                cnv5 = document.getElementById("MyC5");
+                cnv6 = document.getElementById("MyC6");
+                cnv7 = document.getElementById("MyC7");
+                cnv8 = document.getElementById("MyC8");
+                
+                ctx = cnv.getContext("2d");
+                ctx1 = cnv1.getContext("2d");
+                ctx2 = cnv2.getContext("2d");
+                ctx3 = cnv3.getContext("2d");
+                ctx4 = cnv4.getContext("2d");          
+                ctx5 = cnv5.getContext("2d");
+                ctx6 = cnv6.getContext("2d");
+                ctx7 = cnv7.getContext("2d");
+                ctx8 = cnv8.getContext("2d");
+                
+                
+                //Draw scene and make condition
+                Draw();
+                //Draw clouds
+                DrawClouds();
+                //Push Candy Orange Into array 
+                pushCandy1();
+                //Push Candy Green into array
+                pushCandy2();
+                //Make ground move
+                DrawGroundShapes();
+                //Draw 3wa2ek
+                DrawObs();
+                //Draw Candy Orange
+                DrawCandy1();
+                //Draw Candy Brown
+                DrawCandy();
+                //Push Rain into array
+                pushRain();
+                //Push Clouds into array 
+                pushClouds();
+                //Draw candy Green 
+                DrawCandy2();
+                //Make character jump
+                jump();
+                //Push 3wa2ek into array 
+                pushObs();
+                //Push candy brown into array 
+                pushCandy();
+                //Draw rain 
+                DrawRain();
+                //Make character move
+                Move();
+            
+                
+            }
+              
+        
+            var candyTaked =0;
+            var OrangesTaked = 0;
+            var GreensTaked = 0;
+            var canModifyjump = false;
+            var sick = false;
+            var arrowUp = false;
+   
+           
+            function Draw()
+            {
+             
+                 window.requestAnimationFrame(Draw);
+                
+                 if(p.lives<0)
+                {
+                    gameFinished = true;
+                }
+               
+                
+                 if(gameFinished == true)
+                {
+                    gameOver();
+                }
+               
+                
+                var time1 = new Date();
+                
+                
+                for(var i =0;i<SceneImagesSrcs.length;i++)
+                {
+                   SceneImages[i] = new Image();
+                    SceneImages[i].src = SceneImagesSrcs[i];
+                }
+                
+                for(var i=0;i<playerImageSources.length;i++)
+                {
+                    playerImage[i] = new Image();
+                    playerImage[i].src = playerImageSources[i];
+                }
+                
+                for(var i=0;i<liveImagesSources.length;i++)
+                {
+                    liveImages[i] = new Image();
+                    liveImages[i].src = liveImagesSources[i];
+                }
+                
+                 for(var i=0;i<OrangeImagesSources.length;i++)
+                {
+                    OrangeImages[i] = new Image();
+                    OrangeImages[i].src = OrangeImagesSources[i];
+                }
+                
+                for(var i=0;i<GreenImagesSources.length;i++)
+                {
+                    GreenImages[i] = new Image();
+                    GreenImages[i].src = GreenImagesSources[i];
+                }
+              
+                
+                
+             Gro = new ground(0,cnv.height-100,cnv.width,cnv.height-150,SceneImages[0]);
+             msky = new sky(0,0,cnv.width,cnv.height,SceneImages[1]);
+         
+             
+               
+                msky.Draw(ctx);
+                Gro.Draw(ctx);
+                msky.Draw(ctx5);
+                
+                
+               
+                
+                if(!muteSound)
+                {
+                     BackGroundSound.play();
+                }
+                else
+                {
+                     BackGroundSound.pause();
+                }
+               
+                ctx6.drawImage(liveImages[5-p.lives],100,290,100,300);
+                
+               
+                
+                 var removed;
+                
+                
+               //Conditions
+                
+                //clouds out of screen delete it 
+            clouds.forEach(function(item){
+                if(item.x<-1500)
+                {
+                     removed = clouds.indexOf(item);
+                        clouds.splice(removed,1);
+                }
+               
+            });
+                 
+                //low rain lmst el2rd t5tfi
+                rain.forEach(function(item){
+                   shadows.forEach(function(item1){
+                      if(testIntersection(item,item1))
+                      {
+                          item.isActive = false;
+                          removed = rain.indexOf(item);
+                          rain.splice(removed,1);
+                      }
+                   });
+                });
+                
+                //3shan mafesh candy tb2a fo2 eltania 
+                 Greens.forEach(function(item){
+                   Oranges.forEach(function(item1){
+                      if(testIntersection(item,item1))
+                      {
+                          item.isActive = false;
+                          removed = Greens.indexOf(item);
+                          Greens.splice(removed,1);
+                      }
+                   });
+                });
+                
+                //3shan mafesh candy tb2a fo2 el3a2ek 
+                  Oranges.forEach(function(item){
+                   obs.forEach(function(item1){
+                      if(testIntersection(item,item1))
+                      {
+                          item.isActive = false;
+                          removed = Oranges.indexOf(item);
+                          Oranges.splice(removed,1);
+                      }
+                   });
+                });
+                
+                 //3shan mafesh candy tb2a fo2 el3a2ek 
+                 Greens.forEach(function(item){
+                   obs.forEach(function(item1){
+                      if(testIntersection(item,item1))
+                      {
+                          item.isActive = false;
+                          removed = Greens.indexOf(item);
+                          Greens.splice(removed,1);
+                      }
+                   });
+                });
+                
+                 //3shan mafesh candy tb2a fo2 eltania 
+                 Greens.forEach(function(item){
+                   candy.forEach(function(item1){
+                      if(testIntersection(item,item1))
+                      {
+                          item.isActive = false;
+                          removed = Greens.indexOf(item);
+                          Greens.splice(removed,1);
+                      }
+                   });
+                    
+                    
+                });
+                
+                
+                
+                
+                //3shan mafesh candy tb2a fo2 el3a2ek 
+                obs.forEach(function(item){
+                    candy.forEach(function(item2){
+                        if(testIntersection(item,item2))
+                        {
+                            item2.isActive = false;
+                            removed = candy.indexOf(item);
+                            candy.splice(removed,1);
+                        }
+                    })
+                });
+                
+                //3shan mafesh candy tb2a fo2 el3a2ek 
+                obs.forEach(function(item){
+                    Oranges.forEach(function(item2){
+                        if(testIntersection(item,item2))
+                        {
+                            item2.isActive = false;
+                            removed = Oranges.indexOf(item);
+                            Oranges.splice(removed,1);
+                        }
+                    })
+                });
+                
+                
+                //3shan low ella3eb 3da el3a2ek w m5btsh feh yzed elscore wa7ed w el3a2ek ytms7 
+                obs.forEach(function(item){
+                    if(item.x<(p.x-60) && !testIntersection(item,p))
+                       {
+                        removed = obs.indexOf(item);
+                        obs.splice(removed,1);
+                       p.score+=1;
+                       }
+                });
+                
+                //3shan low 5bt fe 3a2ek
+                obs.forEach(function(item){
+                    if(testIntersection(item,p)){
+                         removed = obs.indexOf(item);
+                         obs.splice(removed,1);
+                        if(!muteSound)
+                        {
+                             HitSound.play();
+                        }
+                        else
+                        {
+                             HitSound.pause();
+                        }
+                       
+                          p.lives-=1;
+                    }
+                });
+                
+                
+                //low 2a5d 5 orange candy y2ba lonh orange w y2dr yt7km fe jump lmdh 5000 millisecond
+                if(OrangesTaked==5)
+                {
+                    canModifyjump = true;
+                    OrangesTaked =0;
+                    
+                   
+                    setTimeout(function(){
+                        canModifyjump = false;
+                        p.JumpHeight = 350;
+                        
+                        
+                    },5000);
+                }
+                
+               
+            
+                //low 2a5d 2 green candy lonh yb2a green w mi2drsh ynd ella b3d 2000 millisecond
+                if(GreensTaked==2)
+                {
+                    canModifyjump = false;
+                    GreensTaked =0;
+                    sick = true;
+                    
+                    p.JumpHeight =350;
+                   
+                    setTimeout(function(){
+                        sick = false;
+                        
+                    },2000);
+                }
+                
+                //els7m yzhr low 2rbt men 3a2ek
+                 if(arrowUp && !keys.space)
+                  {
+                            ctx4.clearRect(p.x+50,p.y,30,30);
+                            ctx4.drawImage(SceneImages[9],p.x+50,p.y,30,30);
+                  }
+                  else
+                  {
+                     ctx4.clearRect(p.x+50,p.y,30,30);
+                  }
+                
+                
+                //DrawArrowUp
+                obs.forEach(function(item){
+                   
+                        if((item.x-p.x>100 && item.x-p.x<150))
+                    {
+                        arrowUp = true;
+                       
+                        setTimeout(function(){
+                            arrowUp = false;
+                        },500);
+                        
+                    }
+                   
+                    
+                });
+                
+               //el3wa2ek low 5rgt men elscreen ttms7
+                obs.forEach(function(item){
+                      if(item.x<-1500)
+                {
+                    removed = obs.indexOf(item);
+                    obs.splice(removed,1);
+                }
+                
+                });
+                
+                //3shan low ella3eb a5d elcandy el brown 
+                candy.forEach(function(item)
+                              {
+                    if(testIntersection(item,p))
+                    {
+                         removed = candy.indexOf(item);
+                        candy.splice(removed,1);
+                        item.isActive = false;
+                        if(!muteSound)
+                        {
+                              pop.play();
+                        }
+                        else
+                        {
+                             pop.pause();
+                        }
+                        candyTaked++;
+                    }
+                });
+                
+                
+                //3shan low ell3aeb a5d elcandy el green
+                Greens.forEach(function(item)
+                              {
+                    if(testIntersection(item,p))
+                    {
+                         removed = Greens.indexOf(item);
+                        Greens.splice(removed,1);
+                        item.isActive = false;
+                        if(!muteSound)
+                        {
+                            pop.play();
+                        }
+                        else
+                        {
+                             pop.pause();
+                        }
+                        GreensTaked++;
+                    }
+                });
+                
+                
+                
+                //3shan low a5d elcandy el orange
+                 Oranges.forEach(function(item)
+                              {
+                    if(testIntersection(item,p))
+                    {
+                         removed = Oranges.indexOf(item);
+                        Oranges.splice(removed,1);
+                        item.isActive = false;
+                        if(!muteSound)
+                        {
+                             pop.play();
+                        }
+                        OrangesTaked++;
+                    }
+                });
+               
+                
+                //3shan low rain we23 3la el lla3eb
+                rain.forEach(function(item){
+                    if(testIntersection(item,p))
+                    {
+                       removed = rain.indexOf(item);
+                        rain.splice(removed,1);
+                        item.isActive = false;
+                        if(!muteSound)
+                        {
+                             RainSound.play();
+                        }
+                        else
+                        {
+                             RainSound.pause();
+                        }
+                        p.score+=.5;
+                    }
+                });
+                
+               
+                gamePausedtxt = "GamePaused";
+                gamePlayedtxt = "GamePlayed";
+                gameSoundOff = "Off" ;
+                gameSoundOn = "On";
+                
+            ctx5.font = "20pt Calibria";
+            ctx5.fillStyle = "#fff";
+            ctx5.fillText("Score : " + p.score, 20, 40);
+            ctx5.fillText("Life : " + p.lives, 20, 70);
+            ctx5.fillText("Candy : " + candyTaked, 20, 100);
+            ctx5.fillText("Orange Candy : " + OrangesTaked, 20, 130);
+            ctx5.fillText("Green Candy : " + GreensTaked, 20, 160);
+               if(!pause)
+               {
+                   gameTime = (time1-time)/1000;
+               }
+            ctx5.fillText("Time : " + gameTime , 20, 190);
+           if(sick)
+           {
+                ctx5.fillText("JumpHeight : " + 0, 20, 220);
+           }
+           else
+           {
+               ctx5.fillText("JumpHeight : " + (450-p.JumpHeight), 20, 220);      
+           }
+           
+                
+                if(pause)
+                {
+                      ctx5.fillText("GameState : " + gamePausedtxt, 20, 250);
+                }
+                else
+                {
+                     ctx5.fillText("GameState : " + gamePlayedtxt, 20, 250);
+                }
+            
+                if(muteSound)
+                {
+                     ctx5.fillText("GameSound : " + gameSoundOff, 20, 280);
+                }
+                else 
+                {
+                     ctx5.fillText("GameSound : " + gameSoundOn, 20, 280);
+                }
+               
+                //3shan kol 30 brown candy el live tzed wa7ed
+              if(candyTaked==30)
+              {
+                  p.lives+=1;
+                  candyTaked=0;
+              }
+                
+                //low candy 5rgt men screen ttms7 
+                 candy.forEach(function(item){
+                      if(item.x<=-1500)
+                {
+                    removed = candy.indexOf(item);
+                        candy.splice(removed,1);
+                }
+               
+                });
+                
+                //low green candy 5rgt men screen ttms7
+                 Greens.forEach(function(item){
+                      if(item.x<=-1500)
+                {
+                    removed = Greens.indexOf(item);
+                        Greens.splice(removed,1);
+                }
+               
+                });
+                
+                
+                //low orange candy 5rgt men screen ttms7 
+                 Oranges.forEach(function(item){
+                      if(item.x<=-1500)
+                {
+                    removed = Oranges.indexOf(item);
+                        Oranges.splice(removed,1);
+                }
+               
+                });
+                
+                
+                //low elshadow 5rg men screen ytms7
+                shadows.forEach(function(item){
+                     if(item.x<=-1500)
+                {
+                    removed = shadows.indexOf(item);
+                        shadows.splice(removed,1);
+                }
+                });
+                
+                
+            }
+            
+            
+           
+            //pushObs kol 5000 millisecond
+            function pushObs()
+            {
+                 setTimeout(function(){
+                    
+                     
+                          window.requestAnimationFrame(pushObs);
+                       var x =  Math.floor((Math.random() * 100) + 40);
+                     
+                     if(!pause)
+                     {
+                          obs.push(new mainObject(Math.floor((Math.random() * cnv.width+200) + cnv.width),400+(100-x),20, x,SceneImages[4]));
+                     }
+                 },5000) 
+            }
+            
+          var gravity = .5;
+            //jump
+            function jump()
+            {
+              setTimeout(function(){
+                    window.requestAnimationFrame(jump);   
+                 
+                if(!pause)
+                {
+                     if(keys.space)
+                {
+                   if(p.IsOnGround && sick==false)
+                   {
+                       
+                       if(p.y>p.JumpHeight)
+                      {
+                          
+                        p.y-=(5-gravity);
+                        ctx4.clearRect(p.x,p.y+p.height,p.width,p.height);
+                      }
+                       if(!muteSound)
+                      {
+                       hopp.play();
+                      }
+                   }
+                       
+                      
+                }
+                else{
+                    if(!keys.space){
+                        if(p.y<450)
+                    {
+                         p.y+=(5+gravity);
+                         ctx4.clearRect(p.x,p.y-p.height,p.width,p.height);
+                    }
+                    }
+                    
+                }
+                }
+              },100/9000);
+            }
+            
+            //playerMove
+            var p = new player(50,450,50,50);
+            
+             var g =0;
+           
+                 function Move(){
+            setTimeout(function()
+                       {
+                     window.requestAnimationFrame(Move);
+               if(!pause)
+               {
+                     ctx4.clearRect(p.x,p.y,p.width,p.height);
+                if(!keys.space)
+                {
+                    if(canModifyjump==true && sick==false)
+                    {
+                       
+                        p.imageUpdate(OrangeImages[g]);
+                    }
+                    else if(canModifyjump==false && sick==true)
+                    {
+                         p.imageUpdate(GreenImages[g]);
+                         
+                    }
+                    else
+                    {
+                        
+                        p.imageUpdate(playerImage[g]);
+                    }
+                }
+                else
+                {
+                     if(canModifyjump==true && sick==false)
+                    {
+                       
+                        p.imageUpdate(OrangeImages[1]);
+                    }
+                     else if(canModifyjump==false && sick==true)
+                    {
+                         p.imageUpdate(GreenImages[1]);
+                    }
+                    else
+                    {
+                    
+                         p.imageUpdate(playerImage[1]);
+                    }
+                }
+                    p.Draw(ctx4);
+                g++;
+                if(g==6)
+                {
+                    g=0;
+                }
+               }
+                
+               
+            },10000/60);
+              
+            }
+            //pushCandy
+             function pushCandy()
+            {
+                 setTimeout(function(){
+                  
+                          window.requestAnimationFrame(pushCandy);
+                     
+                    
+                       if(!pause)
+                       {
+                             candy.push(new mainObject(Math.floor((Math.random() * cnv.width+200) + cnv.width),460,70,50,SceneImages[5]));
+                       }
+                   
+                 },500)
+                
+            }
+            
+            //BlueCandy
+             function pushCandy1()
+            {
+                 setTimeout(function(){
+                  
+                          window.requestAnimationFrame(pushCandy1);
+                     
+                    
+                       if(!pause)
+                       {
+                            Oranges.push(new mainObject(Math.floor((Math.random() * cnv.width+200) + cnv.width),460,70,50,SceneImages[6]));
+                       }
+                    
+                 },2500)
+                
+            }
+            //GreenCandy
+              function pushCandy2()
+            {
+                 setTimeout(function(){
+                   
+                          window.requestAnimationFrame(pushCandy2);
+                       if(!pause)
+                       {
+                            Greens.push(new mainObject(Math.floor((Math.random() * cnv.width+200) + cnv.width),460,70,50,SceneImages[8]));
+                       }
+                    
+                 },2500)
+                
+            }
+            
+            
+            //pushRain
+            function pushRain()
+            {
+                 setTimeout(function(){
+                       window.requestAnimationFrame(pushRain);
+                           for(var i=0;i<8;i++)
+                           {
+                               if(!pause)
+                               {
+                                rain.push(new mainObject(Math.floor((Math.random() * cnv.width-100) + 100),150,5,5,SceneImages[7]));
+                                rain.push(new mainObject(Math.floor((Math.random() * cnv.width-100) + 100),150,5,5,SceneImages[7]));
+                                rain.push(new mainObject(Math.floor((Math.random() * cnv.width-100) + 100),170,5,5,SceneImages[7]));
+                                rain.push(new mainObject(Math.floor((Math.random() * cnv.width-100) + 100),170,5,5,SceneImages[7]));
+                                rain.push(new mainObject(Math.floor((Math.random() * cnv.width-100) + 100),190,5,5,SceneImages[7]));
+                                rain.push(new mainObject(Math.floor((Math.random() * cnv.width-100) + 100),190,5,5,SceneImages[7]));
+                                rain.push(new mainObject(Math.floor((Math.random() * cnv.width-100) + 100),210,5,5,SceneImages[7]));
+                                rain.push(new mainObject(Math.floor((Math.random() * cnv.width-100) + 100),210,5,5,SceneImages[7]));
+                               }
+                           }
+                     
+                 },7000)
+                
+            }
+           //pushClouds
+          function pushClouds()
+            {
+                setTimeout(function(){
+                   
+                          window.requestAnimationFrame(pushClouds);
+                    
+                   if(!pause)
+                   {
+                        clouds.push(new mainObject(Math.floor((Math.random() * (cnv1.width+300)) + cnv1.width),0,100,100,SceneImages[2]));
+                        clouds.push(new mainObject(Math.floor((Math.random() * (cnv1.width+300)) + cnv1.width),70,100,100,SceneImages[2]));
+                   }
+                },100000/60);
+               
+            }
+            
+            
+                      //DrawClouds
+         function DrawClouds(){
+             setTimeout(function(){
+                
+                      window.requestAnimationFrame(DrawClouds);
+                 
+                
+                        clouds.forEach(function(item){ctx1.clearRect(0,0,cnv1.width,200);});
+                        clouds.forEach(function(item){item.Draw(ctx1);});
+                 if(!pause)
+                 {
+                      clouds.forEach(function(item){item.update(-20,0,0);});
+                 }
+                       
+                 
+             },10000/60);
+         }       
+                
+            //DrawGroundShadows
+           function DrawGroundShapes(){
+               setTimeout(function(){
+                 
+                        window.requestAnimationFrame(DrawGroundShapes);
+                   
+                    shadows.push(new mainObject(Math.floor((Math.random() * (cnv1.width)) +0),500,50,200,SceneImages[3]));
+                    shadows.forEach(function(item){ctx1.clearRect(0,cnv1.height-100,cnv1.width,cnv1.height-100);});
+                        shadows.forEach(function(item){item.Draw(ctx1);});
+                   if(!pause)
+                   {
+                       shadows.forEach(function(item){item.update(-10,0,0);});
+                   }
+                        
+               },10);
+           }
+             //DrawObs
+            function DrawObs()
+            {
+                  setTimeout(function(){
+                   
+                          window.requestAnimationFrame(DrawObs);
+                        obs.forEach(function(item){ctx2.clearRect(0,cnv1.height-400,cnv1.width,cnv1.height-100);});
+                        obs.forEach(function(item){item.Draw(ctx2);});
+                      if(!pause)
+                      {
+                           obs.forEach(function(item){item.update(-4,0,0);});
+                      }
+                },1000/6000);
+              
+            }
+            //DrawCandy
+              function DrawCandy()
+            {
+                setTimeout(function(){
+                   
+                         window.requestAnimationFrame(DrawCandy);
+                   
+                   
+                     
+                        candy.forEach(function(item){ctx3.clearRect(0,cnv1.height-300,cnv1.width,cnv1.height-100);});
+                        candy.forEach(function(item){item.Draw(ctx3);});
+                    if(!pause)
+                    {
+                         candy.forEach(function(item){item.update(-4,0,0);});
+                    }
+                       
+                    
+                    
+                },1000/6000);
+            }
+            
+            //DrawCandy1
+            
+             function DrawCandy1()
+            {
+                setTimeout(function(){
+                   
+                          window.requestAnimationFrame(DrawCandy1);
+                   
+                     
+                        Oranges.forEach(function(item){ctx7.clearRect(0,cnv1.height-300,cnv1.width,cnv1.height-100);});
+                        Oranges.forEach(function(item){item.Draw(ctx7);});
+                    if(!pause)
+                    {
+                          Oranges.forEach(function(item){item.update(-4,0,0);});
+                    }
+                      
+                    
+                    
+                },1000/6000);
+            }
+            //DrawCandy2
+            
+             function DrawCandy2()
+            {
+                setTimeout(function(){
+                        window.requestAnimationFrame(DrawCandy2);
+                        Greens.forEach(function(item){ctx8.clearRect(0,cnv1.height-300,cnv1.width,cnv1.height-100);});
+                        Greens.forEach(function(item){item.Draw(ctx8);});
+                    if(!pause)
+                    {
+                          Greens.forEach(function(item){item.update(-4,0,0);});
+                    }
+                },1000/6000);
+            }
+            
+            //DrawRain
+            function DrawRain()
+            {
+                setTimeout(function(){
+                   
+                         window.requestAnimationFrame(DrawRain);
+                     rain.forEach(function(item){ctx3.clearRect(0,100,cnv1.width,cnv1.height-300);});
+                        rain.forEach(function(item){item.Draw(ctx3);});
+                    if(!pause)
+                    {
+                         rain.forEach(function(item){item.update(0,2,0);});
+                    }
+                         
+                  
+                },100/6000);
+            }
+            //keyboard
+            var keys = {
+              space : false
+            };
+                
+            
+           
+            document.onkeydown = function(e)
+            {
+                switch(e.keyCode)
+                {
+                        case 32 :{
+                            keys.space = !keys.space;
+                            setTimeout(function(){
+                                 keys.space = !keys.space;
+                            },700); 
+                        } 
+                        break;
+                        case 87 :{
+                            if(canModifyjump && !pause)
+                            {
+                                 if(p.JumpHeight>0)
+                           {
+                               p.JumpHeight-=10;
+                           }
+                                 
+                            }
+                          
+                        }
+                        break;
+                        case 83 :{
+                            if(canModifyjump && !pause)
+                            {
+                                 if(p.JumpHeight<350)
+                            {
+                                p.JumpHeight+=10;
+                            }
+                            }
+                           
+                            
+                        }
+                        break;
+                        case 77 :{
+                            muteSound = !muteSound;
+                        } 
+                        break;
+                        
+                        case 80 :
+                        {
+                            pause = !pause;
+                        }
+                        break;
+                }
+            }
+    //Math.floor((Math.random() * 10) + 1);
+    
+    </script>
+    </head>
+    <body onload="init()">
+       
+        <div id="Game">
+           
+            <canvas id="MyC" width="800" height="600" style="position:absolute;"></canvas>
+            <canvas id="MyC1" width="800" height="600" style="position:absolute;"></canvas>
+              <canvas id="MyC2" width="800" height="600" style="position:absolute;"></canvas>
+             <canvas id="MyC3" width="800" height="600" style="position:absolute;"></canvas>
+            <canvas id="MyC4" width="800" height="600" style="position:absolute;"></canvas>
+             <canvas id="MyC7" width="800" height="600" style="position:absolute;"></canvas>
+             <canvas id="MyC8" width="800" height="600" style="position:absolute;"></canvas>
+            
+          
+        </div>
+        <div id="GameThings">
+        <canvas id="MyC5" width="300" height="600" style="position:absolute;">
+            </canvas>
+            <canvas id="MyC6" width="300" height="600" style="position:absolute;">
+            </canvas>
+        </div>
+       <div id="SplashScreen" onclick="StartGame()"></div>
+        <div id="GameOver"></div>
+       
+    </body>
+</html>
